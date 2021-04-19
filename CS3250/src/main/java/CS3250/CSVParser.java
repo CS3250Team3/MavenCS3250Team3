@@ -28,7 +28,7 @@ public class CSVParser {
 	public void readProductsCSV(String filename, DataInterface database){
 		String line;  	// Current row contents
 		String[] fields;// Array to store individual product fields
-		
+		database.initializeDatabase("jdbc:mysql://216.137.177.30:3306/testDB?allowPublicKeyRetrieval=true&useSSL=false team3 UpdateTrello!1");
 		// Try to open the file and start reading
 		try (InputStream inputStream = getClass().getResourceAsStream(filename);
 			    BufferedReader reader = new BufferedReader(new FileReader(filename))) {
@@ -38,7 +38,9 @@ public class CSVParser {
 			    	fields = line.split(",");     // Split the row into individual fields
 			    	
 			    	// Fill in newEntry's fields
+					System.out.print("PID - " + fields[0] + " ");
 			    	newEntry.setProductID(fields[0]);
+					System.out.println("ADDING - " + newEntry.getProductID());
 			    	newEntry.setStockQuantity(Integer.parseInt(fields[1]));
 			    	newEntry.setWholesaleCost(Double.parseDouble(fields[2]));
 			    	newEntry.setSalePrice(Double.parseDouble(fields[3]));
