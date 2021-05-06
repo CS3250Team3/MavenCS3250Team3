@@ -4,12 +4,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
-
-import javafx.collections.ObservableList;
 
 /**
  * Class to connect to and edit a MySQL database containing various product entries

@@ -13,9 +13,17 @@ public class User {
 	private String role;
 
 	
+	
+	/** 
+	 * @return String
+	 */
 	public String getRole() {
 		return role;
 	}
+	
+	/** 
+	 * @param role
+	 */
 	public void setRole(String role) {
 		this.role = role;
 	}

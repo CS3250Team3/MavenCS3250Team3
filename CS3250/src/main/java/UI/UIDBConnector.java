@@ -1,7 +1,5 @@
 package UI;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,10 +35,19 @@ public class UIDBConnector {
         Connection connection = DriverManager.getConnection(dbConnection[0], dbConnection[1], dbConnection[2]);
         return connection;
     }
+    /**
+     * 
+     * @return - Database object connected to inventory table
+     * @throws SQLException
+     */
     public DataMan<Entry> getItemsConnection() throws SQLException{
         itemsDB.initializeDatabase("jdbc:mysql://216.137.177.30:3306/testDB?allowPublicKeyRetrieval=true&useSSL=false team3 UpdateTrello!1");
         return itemsDB;
     }
+    /**
+     * @return - Database object connected to customer orders table
+     * @throws SQLException
+     */
     public DataMan<observablePO> getPOConnection() throws SQLException{
         podb.initializeDatabase("jdbc:mysql://216.137.177.30:3306/testDB?allowPublicKeyRetrieval=true&useSSL=false team3 UpdateTrello!1");
         return podb;

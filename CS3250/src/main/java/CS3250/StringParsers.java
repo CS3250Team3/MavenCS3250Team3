@@ -5,6 +5,12 @@ import java.io.FileReader;
 
 public class StringParsers {
 
+    
+    /** 
+     * Parses a string to be used for database connection
+     * @param s - String to be parsed
+     * @return String[] - Array containing DB IP, Username and Password
+     */
     public String[] parseConnectionString(String s){
         String[] arr = new String[3];
         s+=" ";
@@ -26,7 +32,15 @@ public class StringParsers {
         arr[2] = information[2];
         return arr;
     }
+    
+    /** 
+     * Reads a configuration file containing database connection
+     * 
+     * @param filename
+     * @return String - DB connection string
+     */
     public static String readConfig(String filename) {
+        // Open and read file
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filename));
             String dbConnection = reader.readLine();

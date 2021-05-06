@@ -1,7 +1,6 @@
 package CS3250;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Interface for creating and managing a database

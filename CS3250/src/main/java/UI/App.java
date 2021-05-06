@@ -1,12 +1,7 @@
 package UI;
-import java.net.URL;
 
-import CS3250.UserAuthenticator;
-import CS3250.UserData;
 import javafx.application.Application;
-import javafx.event.EventHandler;
-	
-import javafx.event.ActionEvent;
+import javafx.event.EventHandler;	
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

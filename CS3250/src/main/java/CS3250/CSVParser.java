@@ -4,10 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import UI.observablePO;
 
 /*
@@ -54,26 +50,33 @@ public class CSVParser {
 	}
 
 /**
-	 * Parses a CSV file full of products into Entry objects
+	 * Parses a CSV file full of products into Entry objects and updates inventory
 	 *  
 	 * @param filename - Path to the csv file to be parsed
-	 * @param database - Database object
-	 * 
+	 * @param PoDB - Product Order Database object
+	 * @param inventory - Inventory Database object
+	 * @param isReversed - Denotes whether to undo reading
 	 */
-	public void readOrdersCSV(String filename, SQLPo newEntry, SQLData inventory){
+	public void readOrdersCSV(String filename, SQLPo PoDB, SQLData inventory, boolean isReversed){
 		String line;  	// Current row contents
 		String[] fields;// Array to store individual product fields
 		
 		// Try to open the file and start reading
 		try (InputStream inputStream = getClass().getResourceAsStream(filename);
-			    BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+			    BufferedReader reader = new BufferedReader(new FileReader("E:\\git workspace/MavenCS3250Team3/customer_orders_team5_NEW.csv"))) {
 				reader.readLine();
 			    while((line = reader.readLine()) != null) {
 			    	fields = line.split(",");     // Split the row into individual fields
 
-			    	
-			    	// Fill in fields
-			    	populateDB(fields[0], fields[1], fields[2], fields[3], fields[4], newEntry);
+			    	// If reversing previous parse, undo inventory update and delete order
+					if(isReversed) {
+						undoInventoryUpdate(fields[3], Integer.parseInt(fields[4]), inventory, PoDB);
+						PoDB.deleteEntry(fields[3], fields[1], fields[4]);
+					}
+					// Fill in fields
+					else {
+						populateDB(fields[0], fields[1], fields[2], fields[3], fields[4], PoDB);
+					}
 			    }
 		} catch (IOException e) {
 				e.printStackTrace();
@@ -81,33 +84,46 @@ public class CSVParser {
 		return;
 	}
 
-	public void updateInventory(String productID, int orderedQuantity, SQLData inventory) {
-		
-		
+	
+	/**Reverses inventory updates
+	 * 
+	 * @param productID
+	 * @param orderedQuantity
+	 * @param inventory - Inventory Database object
+	 * @param PoDB - Purchase Order database object
+	 */
+	public void undoInventoryUpdate(String productID, int orderedQuantity, SQLData inventory, SQLPo PoDB) {
 		Entry inventoryItem = inventory.readEntry(productID);
+		// Check if product exists
 		if(inventoryItem == null) {
 			System.out.println("Ordered item " + productID + " doesn't exist!");
 		}
+		// Reverse inventory update
 		else {
-			if(inventoryItem.getStockQuantity() < orderedQuantity) {
-				System.out.println("Order quantity exceeds quantity in inventory!");
-			}
-			else {
-				int currentQuantity = inventoryItem.getStockQuantity();
-				inventoryItem.setStockQuantity(currentQuantity - orderedQuantity);
-				inventory.updateEntry(productID, inventoryItem);
-			}
+			int currentQuantity = inventoryItem.getStockQuantity();
+			inventoryItem.setStockQuantity(currentQuantity + orderedQuantity);
+			inventory.updateEntry(productID, inventoryItem);
 		}
 	}
 
-	private void populateDB(String date, String customerEmail, String customerLocation, String productID, String fields, SQLPo PoDB) {
-		System.out.print(date + " " + customerEmail);
+	/**Adds an observablePO object to the database
+	 * 
+	 * @param date
+	 * @param customerEmail
+	 * @param customerLocation
+	 * @param productID
+	 * @param quantity
+	 * @param PoDB - Purchase Order database object
+	 */
+	private void populateDB(String date, String customerEmail, String customerLocation, String productID, 
+							String quantity, SQLPo PoDB) {
+
 		observablePO po = new observablePO();
 		po.setDate(date);
 		po.setEmail(customerEmail);
 		po.setCustomerLocation(customerLocation);
 		po.setProductID(productID);
-		po.quantity(fields);
+		po.quantity(quantity);
 
 		PoDB.createEntry("1", po);
 		 

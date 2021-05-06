@@ -25,10 +25,15 @@ public class UserDB implements DataMan<User>{
     
  
 
+    
+    /** 
+     * Retrieves all users from database 
+     * 
+     * @return List<User>
+     */
     @Override
     public List<User> getEntries() {
         String statement = "SELECT * FROM Users;";
-        String s = "";
         ArrayList<User> arr = new ArrayList<User>();
         try {
 
@@ -105,6 +110,13 @@ public class UserDB implements DataMan<User>{
     }
 
 
+    
+    /** 
+     * Creates a user entry on database
+     * 
+     * @param ID
+     * @param e
+     */
     @Override
     public void createEntry(String ID, User e) {
         byte[] ubytes = e.getUsername(); 
@@ -129,16 +141,21 @@ public class UserDB implements DataMan<User>{
         
     }
 
+    
+    /** 
+     * Retrieves user object from database
+     * 
+     * @param username
+     * @return User
+     */
     @Override
     public User readEntry(String username) {
         byte[] usrnm = null;
         try {
             usrnm = UserAuthenticator.getEncryptedUsername(username);
         } catch (InvalidKeySpecException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         } catch (NoSuchAlgorithmException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         String statement = "SELECT * FROM Users;";
@@ -162,6 +179,13 @@ public class UserDB implements DataMan<User>{
         return null;
     }
 
+    
+    /** 
+     * Updates user info on database
+     * 
+     * @param ID
+     * @param e
+     */
     @Override
     public void updateEntry(String ID, User e) {
         deleteEntry("" + e.getID());
@@ -169,6 +193,12 @@ public class UserDB implements DataMan<User>{
         
     }
 
+    
+    /** 
+     * Deletes user from database 
+     * 
+     * @param id
+     */
     @Override
     public void deleteEntry(String id) {
         String statement = "DELETE FROM Users WHERE ID ='"+ id + "';";
@@ -179,5 +209,4 @@ public class UserDB implements DataMan<User>{
         }
         
     }
-    
 }

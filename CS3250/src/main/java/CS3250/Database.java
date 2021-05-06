@@ -2,6 +2,10 @@ package CS3250;
 
 import java.util.List;
 
+/**Class used for dependency injection of database objects
+ * 
+ * @param <T>
+ */
 public class Database<T> {
 
 DataMan<T> db = null;

@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
@@ -30,7 +29,6 @@ public class UserData {
      */
     public ArrayList<User> getUsers() {
         String statement = "SELECT * FROM Users;";
-        String s = "";
         ArrayList<User> arr = new ArrayList<User>();
         try {
 
@@ -167,7 +165,6 @@ public class UserData {
      */
    public ArrayList<User> getUser(byte[] username) {
         String statement = "SELECT * FROM Users;";
-        String s = "";
         ArrayList<User> arr = new ArrayList<User>();
         try {
                 User currUser = new User();

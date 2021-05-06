@@ -99,6 +99,4 @@ public class Entry {
 	public void setSalePrice(double salePrice) {
 		this.salePrice = salePrice;
 	}
-    
-
 }

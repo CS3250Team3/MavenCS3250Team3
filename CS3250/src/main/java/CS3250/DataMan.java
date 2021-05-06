@@ -1,8 +1,8 @@
 package CS3250;
 import java.util.List;
 /** 
- * A generic interface for our mysql implementation. 
- * classes that implements this:
+ * A generic interface for mysql implementation. 
+ * 
  * 
  */
 public interface DataMan<T> {

@@ -4,12 +4,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 
-import javafx.collections.ObservableList;
 
 /**
  * Class to connect to and edit a MySQL database containing various product entries
@@ -26,10 +23,11 @@ public class ItemsDB implements DataMan<Entry> {
     
     /** 
      * Connects to Database using a connection string and confirms connection
-     * @param filename - String containing database connection, username and password
+     * @param filename - Name of file containing db connection string
      */
     @Override
     public void initializeDatabase(String filename) {
+        // Connect to database
         StringParsers s = new StringParsers();
         var a = s.parseConnectionString(filename);
         connectionString = a[0];
@@ -57,8 +55,7 @@ public class ItemsDB implements DataMan<Entry> {
     public void createEntry(String ID, Entry e) {
         String statement="INSERT INTO DataEntries(productID,supplierID,stockQuantity,WholesaleCost,salePrice) VALUES('" + e.getProductID() + "', '" + e.getSupplierID() + "' , '"+ e.getStockQuantity() + "' , '" + e.getWholesaleCost() + "' , '" + e.getSalePrice() + "');" ;
         try {
-            st.execute(statement);
-            
+            st.execute(statement);    
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
@@ -78,10 +75,12 @@ public class ItemsDB implements DataMan<Entry> {
         String s = "";
         Entry result = new Entry();
         try {
+            // Retrieve entries
             rs = st.executeQuery(statement);
             if(!rs.next()) {
                 return null;
             }
+            // Format entries
             System.out.println(rs.getString("productID"));
             s += rs.getString(1);
             s += "_" +  rs.getString(2);
@@ -104,8 +103,10 @@ public class ItemsDB implements DataMan<Entry> {
         String s = "";
         ArrayList<Entry> al = new ArrayList<Entry>();       
         try {
+            // Retrieve entries
             rs = st.executeQuery(statement);
             
+            // Format entries
             while(rs.next()){
             s += rs.getString(1);
             s += "_" +  rs.getString(2);
@@ -131,6 +132,8 @@ public class ItemsDB implements DataMan<Entry> {
     private Entry parseEntry(String s){
         Entry e = new Entry();
         var ar = s.split("_");
+
+        // Populate object
         e.setProductID(ar[0]);
         e.setSupplierID(ar[1]);
         e.setStockQuantity(Integer.parseInt(ar[2]));
@@ -149,8 +152,6 @@ public class ItemsDB implements DataMan<Entry> {
     public void updateEntry(String ID, Entry e) {
         deleteEntry(ID);
         createEntry(ID,e);
-       
-
     }
 
     

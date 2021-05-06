@@ -7,16 +7,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import javafx.scene.control.Alert;
@@ -25,7 +20,6 @@ import CS3250.DataMan;
 import CS3250.User;
 import CS3250.UserAuthenticator;
 import CS3250.UserDB;
-import CS3250.UserData;
 
 /**
  * Controls the login screen
@@ -110,8 +104,9 @@ public class Controller {
     public void signIn_button(ActionEvent event) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
     	String username = get_User();
     	String password = get_Pass();
+        // Check if user is in database
     	if(authenticated(username,password)) {
-    		// TODO - FXMLLoader can't find DBScreen for some reason
+            // Go to database inventory screen
     		Parent DbsScreen = FXMLLoader.load(getClass().getResource("totalView.fxml"));
             Scene DbsScene = new Scene(DbsScreen);
             Stage dbsStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -119,7 +114,7 @@ public class Controller {
             dbsStage.show();
     	}
     	else {
-    		Stage stage = (Stage) signBtn.getScene().getWindow();
+            // Error pop up for invalid credentials
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Login ERROR");
             alert.setHeaderText("INCORRECT Username or Password");

@@ -21,6 +21,12 @@ public class PODB implements DataMan<observablePO>{
     ResultSet rs;
     
 
+    
+    /** 
+     * Initializes connection to main database
+     * 
+     * @param filename - Name of file containing db connection string
+     */
     public void initializeDatabase(String filename) {
 
         StringParsers s = new StringParsers();
@@ -43,28 +49,39 @@ public class PODB implements DataMan<observablePO>{
         }
     }
 
-    // need to create table for PO's and swap this string
+    
+    /** 
+     * Creates a new customer order and adds to the database
+     * 
+     * @param ID - Unused
+     * @param p - observablePO to be added
+     */
     public void createEntry(String ID, observablePO p) {
         Entry inventoryItem = inventory.readEntry(p.getProductID());
+        // Check if the order is already in the database
         if(poExists(p.getProductID(), Integer.parseInt(p.getQuantity()), p.getDate(), p.getEmail(), p.getCustomerLocation())) {
             System.out.println("Order already exists");
             return;
         }
+        // Check if the item ordered exists
         if(inventoryItem == null) {
             System.out.println("Ordered item " + p.getProductID() + " doesn't exist!");
             return;
         }
         else {
+            // Check if there is enough of item in stock to fulfill order
             if(inventoryItem.getStockQuantity() < Integer.parseInt(p.getQuantity())) {
                 System.out.println("Order quantity exceeds quantity in inventory!");
                 return;
             }
+            // Change inventory to reflect ordered amount
             else {
                 int currentQuantity = inventoryItem.getStockQuantity();
                 inventoryItem.setStockQuantity(currentQuantity - Integer.parseInt(p.getQuantity()));
                 inventory.updateEntry(p.getProductID(), inventoryItem);
             }
         }
+        // Insert po into database
         String statement = "INSERT INTO PO(productID,quantity,date,email,custLoc) VALUES('" + p.getProductID() + "', '" + p.getQuantity()
             + "' , '" + p.getDate() + "' , '" + p.getEmail() + "' , '" + p.getCustomerLocation()  +"');";
         String statement2 = "GET * FROM PO WHERE productID = '" + p.getProductID() + "' AND date = '" + p.getDate() + "';";
@@ -79,14 +96,20 @@ public class PODB implements DataMan<observablePO>{
     }
 
     
+    
+    /** 
+     * Retrieves all customer orders from database
+     * 
+     * @return List<observablePO> - List of all orders in database
+     */
     public List<UI.observablePO> getEntries(){
         List<UI.observablePO> arr = new ArrayList<UI.observablePO>();
         String statement2 = "SELECT * FROM PO;";
-        UserData u = new UserData();
-        u.initializeDatabase(connectionString + " " + username + " " + password);
         UI.observablePO po = new UI.observablePO();
         try{
+            // Retrieve all orders
             rs = st.executeQuery(statement2);
+            // Format as observablePO's and add to arraylist
             while (rs.next()) {
                 po = new UI.observablePO();
                 po.setProductID(rs.getString("productID"));
@@ -104,6 +127,13 @@ public class PODB implements DataMan<observablePO>{
         return arr;
     }
 
+    
+    /**
+     * Retrieves an observablePO object from database
+     * 
+     * @param ID
+     * @return observablePO
+     */
     public observablePO readEntry(String ID) {
         String statement2 = "SELECT * FROM PO WHERE id = '" + ID + "';";
         observablePO po = new observablePO();
@@ -121,6 +151,17 @@ public class PODB implements DataMan<observablePO>{
         return po;
     }
 
+    
+    /** 
+     * Checks to see if customer order is already in database
+     * 
+     * @param PID - Product ID
+     * @param quantity
+     * @param date
+     * @param email
+     * @param location
+     * @return boolean - True if order already exists in database, false otherwise
+     */
     public boolean poExists(String PID, int quantity, String date, String email, String location) {
         String statement2 = "SELECT * FROM PO WHERE productID = '" + PID + "' AND quantity = '" + quantity + "' AND date = '" + date + "' AND email = '" + email + "' AND custLoc = '" + location + "';";       
         try {
@@ -133,24 +174,60 @@ public class PODB implements DataMan<observablePO>{
         return false;
     }
 
+    
+    /** 
+     * Unused
+     * @param ID
+     * @param e
+     */
     public void updateEntry(String ID, observablePO e) {
         // TODO Auto-generated method stub
 
     }
 
-    public void deleteEntry(String id) {
-        // TODO Auto-generated method stub
-
+    
+    /** 
+     * Deletes a customer order from database
+     * 
+     * @param id
+     * @param email
+     * @param quantity
+     */
+    public void deleteEntry(String id, String email, String quantity) {
+        String statement = "DELETE FROM PO WHERE productID ='"+ id + "';";
+        try {
+            st.execute(statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
+    
+    /** 
+     * @param e
+     */
     public void saveEntry(Entry e) {
         // TODO Auto-generated method stub
 
     }
 
+    
+    /** 
+     * @return int
+     */
     public int retSize() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    
+    /** 
+     * @param id
+     */
+    @Override
+    public void deleteEntry(String id) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
